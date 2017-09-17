@@ -1,7 +1,19 @@
 <html>
 <head>
 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
   <script>
+    function escapeHtml(unsafe) {
+      return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+   }
+
     var latex2html = function() {
       var url = "/api/latex2html";
       var method = "POST";
@@ -16,6 +28,7 @@
          // You can get all kinds of information about the HTTP response.
          var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
          var data = request.responseText; // Returned data, e.g., an HTML document.
+         document.getElementById('html-output').innerHTML = escapeHtml(data);
       }
 
       request.open(method, url, async);
@@ -30,14 +43,29 @@
     }
   </script>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
-<h1> Latex2Html Snippet Converter </h1>
+  <div class="container">
+      <h1> Latex to Html Snippet Converter </h1>
 
-<textarea id="latex-input" placeholder="Some Latex...">Hello \texttt{World}</textarea>
+      <form class="form-horizontal">
+          <textarea id="latex-input"
+          class="form-control"
+          placeholder="Some Latex..."
+          rows="7">Hello \texttt{World}</textarea>
+      </form>
+            
+      <button class="btn btn-primary" onclick="latex2html()"> Convert </button>
 
-<button onclick="latex2html()"> Convert </button>
+      <br><br>
+      
+      <pre id="html-output"></pre>
 
-<div id="html-output"></div>
+      <div>
+        <i>Powered by Pandoc</i>
+      </div>
+  </div>
 </body>
 </html>

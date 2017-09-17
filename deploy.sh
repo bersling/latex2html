@@ -4,7 +4,7 @@ rootdir="latex2html"
 server="ubuntu@35.158.213.131"
 
 # compile
-tsc
+source ./build.sh
 
 echo "Upload contents"
 rsync -avz --delete -e 'ssh' "./" "${server}:${rootdir}"

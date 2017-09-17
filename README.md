@@ -1,5 +1,6 @@
-Unfinished implementation of a latex2html website.
+Website, that converts Latex Snippets to HTML.
 
-It's unfinished, because I found exactly this already at: https://pandoc.org/try/
+http://latex2html.tsmean.com/
 
-Should this page stop to exist, I might continue.
+Code is Open Source , with MIT-License and you can find it https://github.com/bersling/latex2html, it's actually just a few lines since it's powered by Pandoc.
+

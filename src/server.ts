@@ -18,21 +18,17 @@ server.get('/', function(req, res) {
 server.post('/api/latex2html', function (req, res) {
   const payload = req.body;
   const fileId = Math.random().toString(36).substring(7);;
-  const filePath = './conversions/' + fileId + '.tex';
+  const inPath = '/tmp/' + fileId + '.tex';
+  const outPath = '/tmp/' + fileId + '.html';
 
-  fs.writeFile(filePath, payload.latex, (writeFileError) => {
+  fs.writeFile(inPath, payload.latex, (writeFileError) => {
 
     if (writeFileError) {
       res.status(500).send(writeFileError.message);
     } else {
-      const process = child_process.spawn('pandoc', [filePath, '-o', `./conversions/${fileId}.html`]);
-      
-      let result = '';
+      const process = child_process.spawn('pandoc', [inPath, '-o', outPath]);
+
       let err = '';
-    
-      process.stdout.on( 'data', data => {
-        result += data;
-      });
     
       process.stderr.on( 'data', data => {
         err += data;
@@ -43,7 +39,14 @@ server.post('/api/latex2html', function (req, res) {
         if (err !== '') {
           res.status(500).send(err);
         } else {
-          res.status(200).send(result);
+          fs.readFile(outPath, (err, data) => {
+            if (err) {
+              res.status(500).send(err.message);
+            } else {
+              res.status(200).send(data);
+            }
+          });
+          
         }
       });
   
