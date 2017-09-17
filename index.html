@@ -1,0 +1,43 @@
+<html>
+<head>
+
+  <script>
+    var latex2html = function() {
+      var url = "/api/latex2html";
+      var method = "POST";
+      var postData = {
+        latex: document.getElementById('latex-input').innerHTML
+      };
+      var async = true;
+
+      var request = new XMLHttpRequest();
+
+      request.onload = function () {
+         // You can get all kinds of information about the HTTP response.
+         var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+         var data = request.responseText; // Returned data, e.g., an HTML document.
+      }
+
+      request.open(method, url, async);
+
+      request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      // Or... request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+      // Or... whatever
+
+      // Actually sends the request to the server.
+      request.send(JSON.stringify(postData));
+
+    }
+  </script>
+
+</head>
+<body>
+<h1> Latex2Html Snippet Converter </h1>
+
+<textarea id="latex-input" placeholder="Some Latex...">Hello \texttt{World}</textarea>
+
+<button onclick="latex2html()"> Convert </button>
+
+<div id="html-output"></div>
+</body>
+</html>
