@@ -17,39 +17,44 @@ server.get('/', function(req, res) {
 
 server.post('/api/latex2html', function (req, res) {
   const payload = req.body;
+  console.log('request to translate:', payload)
   const fileId = Math.random().toString(36).substring(7);;
   const inPath = '/tmp/' + fileId + '.tex';
   const outPath = '/tmp/' + fileId + '.html';
 
   fs.writeFile(inPath, payload.latex, (writeFileError) => {
 
+    console.log('Successfully wrote payload to file for conversion.')
+
     if (writeFileError) {
       res.status(500).send(writeFileError.message);
     } else {
-      const process = child_process.spawn('pandoc', [inPath, '-o', outPath]);
+      try {
+        const process = child_process.spawn('pandoc', [inPath, '-o', outPath]);
+        let err = '';
+        process.stderr.on('data', data => {
+          err += data;
+        });
 
-      let err = '';
-    
-      process.stderr.on( 'data', data => {
-        err += data;
-      });
-    
-      process.on( 'close', code => {
-        console.log( `child process exited with code ${code}` );
-        if (err !== '') {
-          res.status(500).send(err);
-        } else {
-          fs.readFile(outPath, (err, data) => {
-            if (err) {
-              res.status(500).send(err.message);
-            } else {
-              res.status(200).send(data);
-            }
-          });
-          
-        }
-      });
-  
+        process.on('close', code => {
+          console.log(`child process exited with code ${code}`);
+          if (err !== '') {
+            res.status(500).send(err);
+          } else {
+            fs.readFile(outPath, (err, data) => {
+              if (err) {
+                res.status(500).send(err.message);
+              } else {
+                res.status(200).send(data);
+              }
+            });
+
+          }
+        });
+      } catch (err) {
+        console.log('An error occurred:', err);
+      }
+
     }
 
   });
@@ -57,6 +62,6 @@ server.post('/api/latex2html', function (req, res) {
 });
 
 const port = process.argv[2] || 46536;
-server.listen(port, function() {
+server.listen(port, function () {
   console.log(`server started on ${port}`);
 });
