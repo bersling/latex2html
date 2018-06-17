@@ -3,9 +3,10 @@ services:
   main:
     image: tsmean/latex2html:2
     deploy:
-      placement:
-        constraints:
-          - node.labels.m1 == true
+      # placement:
+      #   constraints:
+      #     - node.labels.w1 == true
+      replicas: 1
       resources:
         limits:
           cpus: '0.50'
